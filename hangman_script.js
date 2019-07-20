@@ -1,58 +1,74 @@
-"use strict";
 class Hangman{
-	constructor(word, guesses, status){
-		this.the_word = word.toLowerCase().split('');
-		this.number_of_guesses = guesses;
-		this.guessed_letters = [];
-		this.playing_status = status	
+	constructor(word, no_of_guesses, guessed_letters){
+		this.word = word.split('');
+		this.no_of_guesses = no_of_guesses;
+		this.guessed_letters = guessed_letters;
 	}
-	calculate_game_status(){
-		document.querySelector('.display_remaining_guesses').innerHTML = '';
-		const q = document.createElement('p');
-		document.querySelector('.display_remaining_guesses').appendChild(q);
-		if(this.number_of_guesses <=0){
-			this.playing_status = 'failed'
-			q.textContent = `You lose. The word was ${this.the_word.join('')}`;
-			return;
-		}
-		if(this.the_word.length === this.guessed_letters.length){
-			this.playing_status = 'finished'
-			q.textContent = `You win`;
-			return;
-		}if(this.playing_status === 'playing'){
-			const q = document.createElement('p');
-			q.textContent = `Number of guesses remaining: ${this.number_of_guesses}`;
-			document.querySelector('.display_remaining_guesses').appendChild(q);
+	show_stats(){
+		document.getElementById('guesses').innerHTML = `Guesses left: ${this.no_of_guesses}`
+		document.getElementById('guessed-letters').innerHTML = `Guessed Letters: ${this.guessed_letters}`
+	}
+	calculate_guesses(){
+		const x = this.word.map((arrayItem)=>{
+			return arrayItem.toLowerCase();
+		})
+		if(!x.includes(document.getElementById('user-input').value.toLowerCase())){
+			this.no_of_guesses--
 		}
 	}
-	add_guess(){
-		const x = prompt('enter letter');
-		if(this.guessed_letters.includes(x)){
-			console.log('already used this letter');
-			return;
-		}else{
-			document.querySelector('.display').innerHTML = '';
-			if(this.the_word.includes(x)){
-				this.guessed_letters.push(x);
+	display_puzzle(){
+		let puzzle_word = '';
+		this.word.forEach((arrayItem)=>{
+			if(this.guessed_letters.includes(arrayItem.toLowerCase()) || arrayItem === ' '){
+				puzzle_word += arrayItem
 			}else{
-				this.number_of_guesses--
+				puzzle_word += '*'
 			}
-			this.the_word.forEach((array_item)=>{
-				if(this.guessed_letters.includes(array_item)){
-					const a = document.createElement('span');
-					a.textContent = array_item;
-					document.querySelector('.display').appendChild(a);
-				}else{
-					const a = document.createElement('span');
-					a.textContent = '*';
-					document.querySelector('.display').appendChild(a);
-				}
-			})
+		})
+		document.getElementById('word').innerHTML = puzzle_word
+		return puzzle_word;
+	}
+	add_guesses(){
+		if(this.guessed_letters.includes(document.getElementById('user-input').value.toLowerCase())){
+			console.log('already guessed that');
+			return
+		}else{
+			this.guessed_letters.push(document.getElementById('user-input').value.toLowerCase())
+			one.calculate_guesses();
 		}
-		this.calculate_game_status();
 	}
 }
+document.getElementById('user-input').addEventListener('keydown', (e)=>{
+	if(e.keyCode === 13){
+		if(document.getElementById('user-input').value.length === 1){
+			one.add_guesses();
+			one.display_puzzle();
+			one.show_stats();
+		}else{
+			console.log('one letter at a time')
+		}
+		document.getElementById('user-input').value = '';
+	}
+})
+document.getElementById('enter').addEventListener('click', ()=>{
+	if(document.getElementById('user-input').value.length === 1){
+		one.add_guesses();
+		one.display_puzzle();
+		one.show_stats();
+	}else{
+		console.log('one letter at a time')
+	}
+	document.getElementById('user-input').value = '';
+})
 
+let one;
 
-const one = new Hangman('cat', 3, 'playing');
-const two = new Hangman('new york', 7, 'playing');
+const puzzle = fetch('http://puzzle.mead.io/puzzle?wordCount=3').then((response)=>{
+	return response.json();
+}).then((data)=>{
+	one = new Hangman(data.puzzle, 7, [])
+	one.display_puzzle();
+	one.show_stats();
+}).catch((error)=>{
+	console.log('error here')
+})
