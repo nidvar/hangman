@@ -9,7 +9,7 @@ let score=0;
 let death=1;
 
 const get_word=()=>{
-    fetch('https://puzzle.mead.io/puzzle?wordCount=3').then((response)=>{
+    fetch('http://puzzle.mead.io/puzzle?wordCount=3').then((response)=>{
         return response.json();
     }).then((data)=>{
         word = data.puzzle
@@ -112,6 +112,8 @@ document.getElementById('restart').addEventListener('click',()=>{
     score=0;
     death=1;
     get_word();
+    the_div.innerHTML='';
+    document.getElementById('pic').setAttribute('src',`images/hangman${death}.jpg`);
     document.getElementById('run').style.display='inline-block';
     input_box.style.display='inline-block';
 })
