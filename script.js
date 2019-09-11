@@ -9,7 +9,7 @@ let score=0;
 let death=1;
 
 const get_word=()=>{
-    fetch('http://puzzle.mead.io/puzzle?wordCount=3').then((response)=>{
+    fetch('https://puzzle.mead.io/puzzle?wordCount=3').then((response)=>{
         return response.json();
     }).then((data)=>{
         word = data.puzzle
