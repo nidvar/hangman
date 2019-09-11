@@ -1,8 +1,8 @@
 "use strict";
 const input_box = document.getElementById('user_input');
 const the_div = document.getElementById('root');
-const guessed_letters=[];
-const right_letters=[];
+let guessed_letters=[];
+let right_letters=[];
 let word;
 let the_word;
 let score=0;
@@ -61,11 +61,15 @@ const run_game=()=>{
         document.getElementById('pic').setAttribute('src',`images/hangman${death}.jpg`);
         if(death===7){
             the_div.innerHTML='';
+            the_div.innerHTML=`<h1>${word}</h1>`;
+
             const h1 = document.createElement('h1');
-            h1.textContent='DEATH';
+            h1.textContent='YOU LOSE';
             document.getElementById('root3').appendChild(h1);
+
             document.getElementById('run').style.display='none';
             input_box.style.display='none';
+            return
         }
     }
     guessed_letters.push(input_box.value.toLowerCase());
@@ -94,11 +98,13 @@ const run_game=()=>{
     
     if(score === right_letters.length){
         the_div.innerHTML='';
+        the_div.innerHTML=`<h1>${word}</h1><br>`;
         const h1 = document.createElement('h1');
         h1.textContent='WIN';
-        the_div.appendChild(h1);
+        document.getElementById('root3').appendChild(h1);
         document.getElementById('run').style.display='none';
         input_box.style.display='none';
+        return
     }
 }
 document.getElementById('run').addEventListener('click',()=>{
@@ -115,7 +121,10 @@ document.getElementById('restart').addEventListener('click',()=>{
     right_letters=[];
     get_word();
     the_div.innerHTML='';
+    document.getElementById('root3').innerHTML='';
+    document.getElementById('root2').innerHTML='';
     document.getElementById('pic').setAttribute('src',`images/hangman${death}.jpg`);
     document.getElementById('run').style.display='inline-block';
     input_box.style.display='inline-block';
+    input_box.value='';
 })
