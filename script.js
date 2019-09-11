@@ -111,6 +111,8 @@ input_box.addEventListener('keydown',(e)=>{
 document.getElementById('restart').addEventListener('click',()=>{
     score=0;
     death=1;
+    guessed_letters=[];
+    right_letters=[];
     get_word();
     the_div.innerHTML='';
     document.getElementById('pic').setAttribute('src',`images/hangman${death}.jpg`);
